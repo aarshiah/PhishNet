@@ -2,25 +2,77 @@
 // 
 
 #include "framework.h"
-#include "PhishNet2.h"
+#include "UIElements.h"
+#include "Resource.h"
 #include "Resource.h"
 #include <wingdi.h>
 
 #define MAX_LOADSTRING 100
 
-// Global Variables:
-HINSTANCE hInst;                                // current instance
-WCHAR szTitle[MAX_LOADSTRING];                  // The title bar text
-WCHAR szWindowClass[MAX_LOADSTRING];            // The main window class name
-HFONT hButtonFont = NULL;
 
-// Hover states
-bool isButton1Hovered = false;
-bool isButton2Hovered = false;
-bool isButton3Hovered = false;
-bool isButton4Hovered = false;
-bool isButton5Hovered = false;
 
+
+void DestroyStaticText(HWND hWnd) {
+    if (hStaticText) {
+        DestroyWindow(hStaticText);
+        hStaticText = NULL;  // Set to NULL after destroying
+    }
+}
+
+void CreateFonts() {
+    // Create a font for titles
+    hTitleFont = CreateFont(
+        35,                    // Height
+        0,                     // Width
+        0,                     // Escapement
+        0,                     // Orientation
+        FW_BOLD,              // Weight
+        FALSE,                // Italic
+        FALSE,                // Underline
+        FALSE,                // StrikeOut
+        DEFAULT_CHARSET,      // Character set
+        OUT_DEFAULT_PRECIS,   // Output precision
+        CLIP_DEFAULT_PRECIS,  // Clipping precision
+        DEFAULT_QUALITY,      // Quality
+        DEFAULT_QUALITY,      // Output quality
+        L"Arial"              // Font name
+    );
+
+    hDescriptionFont = CreateFont(
+        24,                    // Height
+        0,                     // Width
+        0,                     // Escapement
+        0,                     // Orientation
+        FW_BOLD,              // Weight
+        FALSE,                // Italic
+        FALSE,                // Underline
+        FALSE,                // StrikeOut
+        DEFAULT_CHARSET,      // Character set
+        OUT_DEFAULT_PRECIS,   // Output precision
+        CLIP_DEFAULT_PRECIS,  // Clipping precision
+        DEFAULT_QUALITY,      // Quality
+        DEFAULT_QUALITY,      // Output quality
+        L"Arial"              // Font name
+    );
+
+    hButtonFont = CreateFont(
+        24,                    // Height
+        0,                     // Width
+        0,                     // Escapement
+        0,                     // Orientation
+        FW_BOLD,              // Weight
+        FALSE,                // Italic
+        FALSE,                // Underline
+        FALSE,                // StrikeOut
+        DEFAULT_CHARSET,      // Character set
+        OUT_DEFAULT_PRECIS,   // Output precision
+        CLIP_DEFAULT_PRECIS,  // Clipping precision
+        DEFAULT_QUALITY,      // Quality
+        DEFAULT_QUALITY,      // Output quality
+        L"Arial"              // Font name
+    );
+
+}
 LRESULT CALLBACK WndProc(HWND, UINT, WPARAM, LPARAM);
 
 void FillSolidRect(HDC hdc, RECT* rect, COLORREF color) {
@@ -28,6 +80,7 @@ void FillSolidRect(HDC hdc, RECT* rect, COLORREF color) {
     FillRect(hdc, rect, hBrush);
     DeleteObject(hBrush);
 }
+
 
 // Forward declarations of functions included in this code module:
 ATOM MyRegisterClass(HINSTANCE hInstance);
@@ -62,7 +115,6 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
             DispatchMessage(&msg);
         }
     }
-
     return (int)msg.wParam;
 }
 
@@ -72,7 +124,7 @@ ATOM MyRegisterClass(HINSTANCE hInstance) {
 
     wcex.cbSize = sizeof(WNDCLASSEX);
     wcex.style = CS_HREDRAW | CS_VREDRAW;
-    wcex.lpfnWndProc = WndProc;
+    wcex.lpfnWndProc = WndProc;  // The WndProc function
     wcex.cbClsExtra = 0;
     wcex.cbWndExtra = 0;
     wcex.hInstance = hInstance;
@@ -94,7 +146,7 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow) {
     int screenWidth = GetSystemMetrics(SM_CXSCREEN);
     int screenHeight = GetSystemMetrics(SM_CYSCREEN);
 
-    // Set the window dimensions
+    // Window dimensions
     int windowWidth = 700;
     int windowHeight = 700;
 
@@ -107,9 +159,11 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow) {
         x, y, windowWidth, windowHeight, nullptr, nullptr, hInstance, nullptr);
 
     if (!hWnd) {
-        return FALSE;
+        MessageBox(nullptr, L"Failed to create window!", L"Error", MB_ICONERROR);
+        return FALSE; // Return false if window creation fails
     }
 
+    // Ensure the window is shown and updated
     ShowWindow(hWnd, nCmdShow);
     UpdateWindow(hWnd);
 
@@ -119,88 +173,112 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow) {
 // Processes messages for the main window.
 LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam) {
     switch (message) {
+
     case WM_CREATE: {
-
-        hButtonFont = CreateFont(
-            24,                  // Height
-            0,                   // Width
-            0,                   // Escapement
-            0,                   // Orientation
-            FW_NORMAL,          // Weight
-            FALSE,              // Italic
-            FALSE,              // Underline
-            FALSE,              // StrikeOut
-            DEFAULT_CHARSET,    // CharSet
-            OUT_OUTLINE_PRECIS, // OutputPrecision
-            CLIP_DEFAULT_PRECIS, // ClippingPrecision
-            DEFAULT_QUALITY,     // Quality
-            0, // Family
-            L"Arial"             // Font name
-        );
-
-        // Create buttons
-        CreateWindow(L"BUTTON", L"", WS_TABSTOP | WS_VISIBLE | WS_CHILD | BS_OWNERDRAW,
-            50, 150, 150, 150, hWnd, (HMENU)ID_BUTTON1, hInst, NULL);
-        CreateWindow(L"BUTTON", L"", WS_TABSTOP | WS_VISIBLE | WS_CHILD | BS_OWNERDRAW,
-            265, 150, 150, 150, hWnd, (HMENU)ID_BUTTON2, hInst, NULL);
-        CreateWindow(L"BUTTON", L"", WS_TABSTOP | WS_VISIBLE | WS_CHILD | BS_OWNERDRAW,
-            475, 150, 150, 150, hWnd, (HMENU)ID_BUTTON3, hInst, NULL);
-        CreateWindow(L"BUTTON", L"", WS_TABSTOP | WS_VISIBLE | WS_CHILD | BS_OWNERDRAW,
-            75, 350, 250, 150, hWnd, (HMENU)ID_BUTTON4, hInst, NULL);
-        CreateWindow(L"BUTTON", L"", WS_TABSTOP | WS_VISIBLE | WS_CHILD | BS_OWNERDRAW,
-            350, 350, 250, 150, hWnd, (HMENU)ID_BUTTON5, hInst, NULL);
-
-        // Create labels
-        HWND hScanLabel = CreateWindow(L"STATIC", L"SCAN", WS_VISIBLE | WS_CHILD | SS_CENTER,
-            50, 310, 150, 20, hWnd, NULL, hInst, NULL);
-        SendMessage(hScanLabel, WM_SETFONT, (WPARAM)hButtonFont, TRUE); // Set font
-
-        HWND hScheduleLabel = CreateWindow(L"STATIC", L"SCHEDULE SCAN", WS_VISIBLE | WS_CHILD | SS_CENTER,
-            265, 310, 150, 20, hWnd, NULL, hInst, NULL);
-        SendMessage(hScheduleLabel, WM_SETFONT, (WPARAM)hButtonFont, TRUE); // Set font
-
-        HWND hHistoryLabel = CreateWindow(L"STATIC", L"HISTORY", WS_VISIBLE | WS_CHILD | SS_CENTER,
-            475, 310, 150, 20, hWnd, NULL, hInst, NULL);
-        SendMessage(hHistoryLabel, WM_SETFONT, (WPARAM)hButtonFont, TRUE); // Set font
-
-        HWND hQuarantinedFilesLabel = CreateWindow(L"STATIC", L"QUARANTINED FILES", WS_VISIBLE | WS_CHILD | SS_CENTER,
-            75, 510, 250, 20, hWnd, NULL, hInst, NULL);
-        SendMessage(hQuarantinedFilesLabel, WM_SETFONT, (WPARAM)hButtonFont, TRUE); // Set font
-
-        HWND hLastScanLabel = CreateWindow(L"STATIC", L"LAST SCAN", WS_VISIBLE | WS_CHILD | SS_CENTER,
-            350, 510, 250, 20, hWnd, NULL, hInst, NULL);
-        SendMessage(hLastScanLabel, WM_SETFONT, (WPARAM)hButtonFont, TRUE); // Set font
-
-
+        LoadHomePage(hWnd,hInst);
+        CreateFonts();
         break;
     }
 
+    case WM_CTLCOLORSTATIC:
+    {
+        HDC hdcStatic = (HDC)wParam;
+        SetBkMode(hdcStatic, TRANSPARENT); // Set the background to transparent
+
+        // Get the control ID to customize colors if needed
+        HWND hControl = (HWND)lParam;
+        int controlId = GetDlgCtrlID(hControl);
+
+        return (LONG_PTR)NULL; // No brush
+    }
+
     case WM_COMMAND: {
-        int wmId = LOWORD(wParam);
-        switch (wmId) {
-        case IDM_ABOUT:
-            DialogBox(hInst, MAKEINTRESOURCE(IDD_ABOUTBOX), hWnd, About);
-            break;
-        case IDM_EXIT:
-            DestroyWindow(hWnd);
-            break;
+        // Handle button clicks
+        switch (LOWORD(wParam)) {
+
         case ID_BUTTON1:
-            MessageBox(hWnd, L"You clicked Button 1!", L"Button Click", MB_OK);
+            DestroyHomePage(hWnd);  // Destroy home page controls
+            SwitchScan(hWnd);
+            LoadScanPage(hWnd, hInst);  // Load scan page controls
+            DisplayScanDetails(hWnd, L"Quick Scan", L"A quick scan will go thorugh all the most important files on your device");
+            InvalidateRect(hWnd, NULL, TRUE);  // Force redraw
+            scanPageVisible = true;
+            CustomScanVisible = false;
+
             break;
+
         case ID_BUTTON2:
-            MessageBox(hWnd, L"You clicked Button 2!", L"Button Click", MB_OK);
+            // Logic for Button 2
+            schedulePageVisible = true;
+            SetUpSchedulePage(hWnd, hInst);
             break;
+
         case ID_BUTTON3:
-            MessageBox(hWnd, L"You clicked Button 3!", L"Button Click", MB_OK);
+            // Logic for Button 3
+            MessageBox(hWnd, L"Button 3 clicked", L"Info", MB_OK);
             break;
+
         case ID_BUTTON4:
-            MessageBox(hWnd, L"You clicked Button 4!", L"Button Click", MB_OK);
+            // Logic for Button 4
+            MessageBox(hWnd, L"Button 4 clicked", L"Info", MB_OK);
             break;
+
         case ID_BUTTON5:
-            MessageBox(hWnd, L"You clicked Button 5!", L"Button Click", MB_OK);
+            // Logic for Button 5
+            MessageBox(hWnd, L"Button 5 clicked", L"Info", MB_OK);
             break;
-        default:
-            return DefWindowProc(hWnd, message, wParam, lParam);
+
+        case ID_QUICKSCAN_BUTTON:
+            // Logic for Quick Scan button
+            SwitchScan(hWnd);
+            ShowWindow(hQuickScanLabel, SW_SHOW);
+            InvalidateRect(hWnd, NULL, TRUE);  // Force redraw
+            DisplayScanDetails(hWnd, L"Quick Scan", L"A quick scan will go thorugh all the most important files on your device");
+            scanPageVisible = true;
+            CustomScanVisible = false;
+            break;
+
+        case ID_SYSTEMSCAN_BUTTON:
+            // Logic for System Scan button
+            SwitchScan(hWnd);
+            ShowWindow(hSystemScanLabel, SW_SHOW);
+            InvalidateRect(hWnd, NULL, TRUE);  // Force redraw
+            DisplayScanDetails(hWnd, L"System Scan", L"A complete scan of all system disks & directories");
+            scanPageVisible = true;
+            CustomScanVisible = false;
+            break;
+
+        case ID_CUSTOMSCAN_BUTTON:
+            SwitchScan(hWnd);
+            ShowWindow(hCustomScanLabel, SW_SHOW);
+            DisplayScanDetails(hWnd, L"Custom Scan", L"Select Drive(s), Directories, or Files to scan");
+            InvalidateRect(hWnd, NULL, TRUE);  // Force redraw
+            scanPageVisible = false;
+            CustomScanVisible = true;
+            break;
+
+        case ID_STARTSCAN_BUTTON:
+            // Logic for Start Scan button
+            ShowWindow(hStartScanButtonLabel, SW_SHOW);
+            InvalidateRect(hWnd, NULL, TRUE);  // Force redraw
+            MessageBox(hWnd, L"Starting scan...", L"Scan", MB_OK);
+
+            scanPageVisible = true;
+
+            break;
+
+        case ID_HOME_BUTTON:
+            // Logic for Home Button
+            DestroyScanPage(hWnd);  // Destroy scan page controls
+            DestroyControls(hWnd);
+            LoadHomePage(hWnd, hInst);  // Load home page controls
+            InvalidateRect(hWnd, NULL, TRUE);  // Force redraw
+            homePageVisible = true;
+            CustomScanVisible = false;
+            scanPageVisible = false;
+            schedulePageVisible = false;
+
+            break;
         }
         break;
     }
@@ -223,34 +301,6 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam) 
         MapWindowPoints(NULL, hWnd, (LPPOINT)&button3Rect, 2);
         MapWindowPoints(NULL, hWnd, (LPPOINT)&button4Rect, 2);
         MapWindowPoints(NULL, hWnd, (LPPOINT)&button5Rect, 2);
-
-        // Check hover state and invalidate for each button
-        bool button1NewState = PtInRect(&button1Rect, pt);
-        bool button2NewState = PtInRect(&button2Rect, pt);
-        bool button3NewState = PtInRect(&button3Rect, pt);
-        bool button4NewState = PtInRect(&button4Rect, pt);
-        bool button5NewState = PtInRect(&button5Rect, pt);
-
-        if (isButton1Hovered != button1NewState) {
-            isButton1Hovered = button1NewState;
-            InvalidateRect(GetDlgItem(hWnd, ID_BUTTON1), NULL, TRUE);
-        }
-        if (isButton2Hovered != button2NewState) {
-            isButton2Hovered = button2NewState;
-            InvalidateRect(GetDlgItem(hWnd, ID_BUTTON2), NULL, TRUE);
-        }
-        if (isButton3Hovered != button3NewState) {
-            isButton3Hovered = button3NewState;
-            InvalidateRect(GetDlgItem(hWnd, ID_BUTTON3), NULL, TRUE);
-        }
-        if (isButton4Hovered != button4NewState) {
-            isButton4Hovered = button4NewState;
-            InvalidateRect(GetDlgItem(hWnd, ID_BUTTON4), NULL, TRUE);
-        }
-        if (isButton5Hovered != button5NewState) {
-            isButton5Hovered = button5NewState;
-            InvalidateRect(GetDlgItem(hWnd, ID_BUTTON5), NULL, TRUE);
-        }
 
         break;
     }
@@ -311,37 +361,232 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam) 
             return TRUE;
         }
     }
-
     case WM_PAINT: {
         PAINTSTRUCT ps;
         HDC hdc = BeginPaint(hWnd, &ps);
 
-        // Draw the gray bar at the top of the window
+        // Draw gray bar at the top of the window
         RECT rect;
         rect.left = 0;
         rect.top = 0;
-        rect.right = 800; // or use GetClientRect to get the window width
+        rect.right = 700; // Change to match window width
         rect.bottom = 100; // Set the height of the bar
 
-        // Create a brush with gray color
+        // Gray Brush 
         HBRUSH hGrayBrush = CreateSolidBrush(RGB(169, 169, 169)); // Light gray
         FillRect(hdc, &rect, hGrayBrush);
+        DeleteObject(hGrayBrush); // Clean up the brush
 
-        // Clean up
-        DeleteObject(hGrayBrush);
+        if (homePageVisible){
+            // Draw the gray bar at the bottom of the window (home page, settings page)
+            RECT bottomRect;
+            bottomRect.left = 0;
+            bottomRect.top = 600; // Starting y position for the bottom bar
+            bottomRect.right = 700; // Change to match window width
+            bottomRect.bottom = 700; // Set the height of the bar (bottom of the window)
 
-        // Call the base class handler to draw other components
+            // New gray brush for the bottom bar
+            hGrayBrush = CreateSolidBrush(RGB(169, 169, 169)); // Light gray
+            FillRect(hdc, &bottomRect, hGrayBrush);
+            DeleteObject(hGrayBrush); // Clean up the brush
+
+            // Draw borders around the client area
+            HPEN hBorderPen = CreatePen(PS_SOLID, 3, RGB(0, 0, 0)); // Black color for the border
+            HPEN hOldPen2 = (HPEN)SelectObject(hdc, hBorderPen);
+
+            // Top border
+            MoveToEx(hdc, 0, 100, NULL);
+            LineTo(hdc, 700, 100);
+
+            // Left border
+            MoveToEx(hdc, 0, 100, NULL);
+            LineTo(hdc, 0, 600);
+
+            // Right border
+            MoveToEx(hdc, 697, 100, NULL);
+            LineTo(hdc, 697, 600);
+
+            // Bottom border
+            MoveToEx(hdc, 0, 600, NULL);
+            LineTo(hdc, 700, 600);
+
+            SelectObject(hdc, hOldPen2); // Restore the old pen
+            DeleteObject(hBorderPen); // Clean up the border pen
+        }
+
+        if (schedulePageVisible) {
+            // Draw the gray bar at the bottom of the window (home page, settings page)
+            RECT bottomRect;
+            bottomRect.left = 0;
+            bottomRect.top = 600; // Starting y position for the bottom bar
+            bottomRect.right = 700; // Change to match window width
+            bottomRect.bottom = 700; // Set the height of the bar (bottom of the window)
+
+            // New gray brush for the bottom bar
+            hGrayBrush = CreateSolidBrush(RGB(169, 169, 169)); // Light gray
+            FillRect(hdc, &bottomRect, hGrayBrush);
+            DeleteObject(hGrayBrush); // Clean up the brush
+
+            // Draw borders around the client area
+            HPEN hBorderPen = CreatePen(PS_SOLID, 3, RGB(0, 0, 0)); // Black color for the border
+            HPEN hOldPen2 = (HPEN)SelectObject(hdc, hBorderPen);
+
+            // Top border
+            MoveToEx(hdc, 0, 100, NULL);
+            LineTo(hdc, 700, 100);
+
+            // Left border
+            MoveToEx(hdc, 0, 100, NULL);
+            LineTo(hdc, 0, 600);
+
+            // Right border
+            MoveToEx(hdc, 697, 100, NULL);
+            LineTo(hdc, 697, 600);
+
+            // Bottom border
+            MoveToEx(hdc, 0, 600, NULL);
+            LineTo(hdc, 700, 600);
+
+            SelectObject(hdc, hOldPen2); // Restore the old pen
+            DeleteObject(hBorderPen); // Clean up the border pen
+
+            RECT middleRect;
+            middleRect.left = 50;
+            middleRect.top = 125;
+            middleRect.right = 400;
+            middleRect.bottom = 250;
+
+            HBRUSH hBlackBrush = CreateSolidBrush(RGB(0, 0, 0));
+            FillRect(hdc, &middleRect, hBlackBrush);
+            DeleteObject(hBlackBrush);
+
+            RECT middleTitleRect;
+            middleTitleRect.left = 60;
+            middleTitleRect.top = 135;
+            middleTitleRect.right = 390;
+            middleTitleRect.bottom = 240;
+
+            HBRUSH hDarkGrayBrush = CreateSolidBrush(RGB(77, 77, 77));
+            FillRect(hdc, &middleTitleRect, hDarkGrayBrush);
+            DeleteObject(hDarkGrayBrush);
+        }
+
+        // Get the height of the client area
+        RECT clientRect;
+        GetClientRect(hWnd, &clientRect);
+
+        // Draw the Scan page elements
+        if (scanPageVisible) {
+
+            RECT RightRect;
+            RightRect.left = 226;
+            RightRect.top = 360; // Starting y position for the bottom bar
+            RightRect.right = 700; // Change to match window width
+            RightRect.bottom = 700; // Set the height of the bar (bottom of the window)
+
+            // Create a new brush for the bottom bar
+            hGrayBrush = CreateSolidBrush(RGB(169, 169, 169)); // Light gray
+            FillRect(hdc, &RightRect, hGrayBrush);
+            DeleteObject(hGrayBrush); 
+
+            RECT LeftRect;
+            LeftRect.left = 0;
+            LeftRect.top = 100; 
+            LeftRect.right = 226; 
+            LeftRect.bottom = 700; 
+
+            // Create a new brush for the bottom bar
+            hGrayBrush = CreateSolidBrush(RGB(169, 169, 169)); 
+            FillRect(hdc, &LeftRect, hGrayBrush);
+            DeleteObject(hGrayBrush);
+
+            // Draw the vertical black divider
+            HPEN hOldPen = (HPEN)SelectObject(hdc, CreatePen(PS_SOLID, 3, RGB(0, 0, 0))); // Black color
+            MoveToEx(hdc, 226, 100, NULL); // Start point of the vertical line (x=226, y=0)
+            LineTo(hdc, 226, clientRect.bottom); // End point of the vertical line (x=226, y=clientRect.bottom)
+
+            // Draw the horizontal black line divider
+            MoveToEx(hdc, 226, 360, NULL); // Start point of the horizontal line
+            LineTo(hdc, 700, 360); // End point 
+
+            // Draw the horizontal black line divider
+            MoveToEx(hdc, 0, 100, NULL); // Start point of the horizontal line
+            LineTo(hdc, 700, 100); // End point
+
+            SelectObject(hdc, hOldPen); // Restore the old pen
+            DeleteObject(SelectObject(hdc, CreatePen(PS_NULL, 0, 0))); // Clean up the created pen
+        }
+
+        if (CustomScanVisible){
+            RECT CustomRightRect;
+            CustomRightRect.left = 226;
+            CustomRightRect.top = 100; // Starting y position for the bottom bar
+            CustomRightRect.right = 700; // Change to match window width
+            CustomRightRect.bottom = 700; // Set the height of the bar (bottom of the window)
+
+            // Create a new brush for the right side
+            HBRUSH hWhiteBrush = CreateSolidBrush(RGB(255, 255, 255)); // white
+            FillRect(hdc, &CustomRightRect, hWhiteBrush);
+            DeleteObject(hWhiteBrush);
+
+
+            RECT LeftRect;
+            LeftRect.left = 0;
+            LeftRect.top = 100;
+            LeftRect.right = 226;
+            LeftRect.bottom = 700;
+
+            // Create a new brush for the bottom bar
+            hGrayBrush = CreateSolidBrush(RGB(169, 169, 169));
+            FillRect(hdc, &LeftRect, hGrayBrush);
+            DeleteObject(hGrayBrush);
+
+
+            RECT YellowRect;
+            YellowRect.left = 225;
+            YellowRect.top = 200;
+            YellowRect.right = 700;
+            YellowRect.bottom = 600;
+
+            HBRUSH hYellowBrush = CreateSolidBrush(RGB(252, 244, 204)); // yellow
+            FillRect(hdc, &YellowRect, hYellowBrush);
+            DeleteObject(hYellowBrush);
+
+
+            // Draw the vertical black divider
+            HPEN hOldPen = (HPEN)SelectObject(hdc, CreatePen(PS_SOLID, 3, RGB(0, 0, 0))); // Black color
+            MoveToEx(hdc, 226, 100, NULL); // Start point of the vertical line (x=226, y=0)
+            LineTo(hdc, 226, clientRect.bottom); // End point of the vertical line (x=226, y=clientRect.bottom)
+
+
+            // Draw the horizontal black line divider
+            MoveToEx(hdc, 0, 100, NULL); // Start point of the horizontal line
+            LineTo(hdc, 700, 100); // End point
+
+            // Draw the top border of the yellow rectangle
+            MoveToEx(hdc, 226, 200, NULL); // Start point of the horizontal line
+            LineTo(hdc, 700, 200); // End point
+
+            // Draw the bottom border of the left rectangle
+            MoveToEx(hdc, 226, 600, NULL); // Start point of the horizontal line
+            LineTo(hdc, 700, 600); // End point
+
+        }
+
         EndPaint(hWnd, &ps);
-        break;
+        return 0;
     }
 
-    case WM_DESTROY:
-        if (hButtonFont) {
-            DeleteObject(hButtonFont); // Clean up the font object
-            hButtonFont = NULL;        // Reset the handle
-        }
+
+    case WM_DESTROY: {
+
+        DeleteObject(hTitleFont);
+        DeleteObject(hDescriptionFont);
+        DeleteObject(hButtonFont);
+
         PostQuitMessage(0);
         break;
+    }
 
     default:
         return DefWindowProc(hWnd, message, wParam, lParam);
@@ -350,6 +595,20 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam) 
 }
 
 
+INT_PTR CALLBACK NewPageProc(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam) {
+    switch (message) {
+    case WM_INITDIALOG:
+        return (INT_PTR)TRUE;
+
+    case WM_COMMAND:
+        if (LOWORD(wParam) == IDOK || LOWORD(wParam) == IDCANCEL) {
+            EndDialog(hDlg, LOWORD(wParam));
+            return (INT_PTR)TRUE;
+        }
+        break;
+    }
+    return (INT_PTR)FALSE;
+}
 
 // About dialog procedure
 INT_PTR CALLBACK About(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam) {

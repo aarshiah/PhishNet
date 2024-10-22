@@ -108,6 +108,7 @@
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalDependencies>$(CoreLibraryDependencies);%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -128,12 +129,15 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="framework.h" />
-    <ClInclude Include="PhishNet2.h" />
+    <ClInclude Include="UIElements.h" />
     <ClInclude Include="Resource.h" />
     <ClInclude Include="targetver.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="HomeMenu.cpp" />
     <ClCompile Include="PhishNet2.cpp" />
+    <ClCompile Include="ScheduleScan.cpp" />
+    <ClCompile Include="Scans.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="PhishNet2.rc" />
@@ -142,6 +146,7 @@
     <Image Include="..\..\..\Downloads\3643772-archive-archives-document-folder-open_113445.ico" />
     <Image Include="..\..\..\Downloads\folder.bmp" />
     <Image Include="..\..\..\Downloads\folder.ico" />
+    <Image Include="..\..\..\Downloads\logo-256x256.ico" />
     <Image Include="..\..\..\Downloads\logo.ico" />
     <Image Include="..\folder.bmp" />
     <Image Include="..\PhishNet Icons\folder.png" />

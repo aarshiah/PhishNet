@@ -24,12 +24,21 @@
     <ClInclude Include="Resource.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="PhishNet2.h">
+    <ClInclude Include="UIElements.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="PhishNet2.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Scans.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="HomeMenu.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="ScheduleScan.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -61,6 +70,9 @@
       <Filter>Resource Files</Filter>
     </Image>
     <Image Include="..\..\..\Downloads\3643772-archive-archives-document-folder-open_113445.ico">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="..\..\..\Downloads\logo-256x256.ico">
       <Filter>Resource Files</Filter>
     </Image>
   </ItemGroup>
