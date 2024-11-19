@@ -82,6 +82,8 @@ public:
     }
 };
 
+
+
 int main(int argc, char* argv[]) {
     if (argc != 2) {
         std::cerr << "Usage: " << argv[0] << " <file_to_scan>" << std::endl;
@@ -101,4 +103,5 @@ int main(int argc, char* argv[]) {
     bool result = tester.scanFile(argv[1]);
     
     return result ? 0 : 1;
+
 }
