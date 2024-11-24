@@ -70,7 +70,7 @@ jobs:
         with:
           cmakeGenerator: "Ninja" # Visual Studio 15 2017
           cmakeListsOrSettingsJson: "CMakeListsTxtBasic"
-          cmakeListsTxtPath: '/libclamav/CMakeLists.txt'
+          cmakeListsTxtPath: "${{runner.workspace}}libclamav/CMakeLists.txt"
           useVcpkgToolchainFile: true
           cmakeAppendedArgs: '-A x64 -DCMAKE_TOOLCHAIN_FILE="$VCPKG_ROOT/scripts/buildsystems/vcpkg.cmake" -DENABLE_EXAMPLES=ON -DENABLE_STATIC_LIB=ON -- -v'
           cmakeBuildType: "${{ env.BUILD_TYPE }}"
