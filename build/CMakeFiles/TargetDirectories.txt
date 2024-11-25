@@ -1,0 +1,7 @@
+/home/gianmarco/clamav/custom-clam-scanner/build/CMakeFiles/clamav-scanner.dir
+/home/gianmarco/clamav/custom-clam-scanner/build/CMakeFiles/edit_cache.dir
+/home/gianmarco/clamav/custom-clam-scanner/build/CMakeFiles/rebuild_cache.dir
+/home/gianmarco/clamav/custom-clam-scanner/build/CMakeFiles/list_install_components.dir
+/home/gianmarco/clamav/custom-clam-scanner/build/CMakeFiles/install.dir
+/home/gianmarco/clamav/custom-clam-scanner/build/CMakeFiles/install/local.dir
+/home/gianmarco/clamav/custom-clam-scanner/build/CMakeFiles/install/strip.dir
