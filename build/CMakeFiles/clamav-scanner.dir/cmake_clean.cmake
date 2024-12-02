@@ -9,6 +9,8 @@ file(REMOVE_RECURSE
   "CMakeFiles/clamav-scanner.dir/src/quickscan.cpp.o.d"
   "CMakeFiles/clamav-scanner.dir/src/scheduler.cpp.o"
   "CMakeFiles/clamav-scanner.dir/src/scheduler.cpp.o.d"
+  "CMakeFiles/clamav-scanner.dir/src/signatureupdater.cpp.o"
+  "CMakeFiles/clamav-scanner.dir/src/signatureupdater.cpp.o.d"
   "CMakeFiles/clamav-scanner.dir/src/systemscan.cpp.o"
   "CMakeFiles/clamav-scanner.dir/src/systemscan.cpp.o.d"
   "clamav-scanner"

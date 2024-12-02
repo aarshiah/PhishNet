@@ -14,43 +14,49 @@
 
 namespace fs = std::filesystem;
 
+// Full system malware scanner - checks entire filesystem except system dirs
 class SystemScan {
 private:
-    cl_engine* engine;
-    unsigned int sigs;
-    struct cl_scan_options options;
-    Database database;
-    int filesScanned;
-    int threatsFound;
-    std::chrono::steady_clock::time_point lastUpdateTime;
+   cl_engine* engine;
+   unsigned int sigs;
+   struct cl_scan_options options;
+   Database database;
+   int filesScanned;
+   int threatsFound;
+   std::chrono::steady_clock::time_point lastUpdateTime;
 
-    const std::vector<std::string> rootDirs = {
-        "/",
-        "/home",
-        "/usr",
-        "/opt",
-        "/var",
-        "/tmp"
-    };
+   // Main system directories to scan
+   std::vector<std::string> rootDirs = {
+       "/",
+       "/home",
+       "/usr",
+       "/opt", 
+       "/var",
+       "/tmp"
+   };
 
-    const std::vector<std::string> skipDirs = {
-        "/proc",
-        "/sys",
-        "/dev",
-        "/run",
-        "/media",
-        "/mnt"
-    };
+   // Skip these - system/mount dirs that don't need scanning
+   std::vector<std::string> skipDirs = {
+       "/proc",
+       "/sys", 
+       "/dev",
+       "/run",
+       "/media",
+       "/mnt"
+   };
 
-    bool shouldSkipDirectory(const std::string& path);
-    bool initializeClamAV();
-    bool scanFile(const std::string& filepath);
-    void scanDirectory(const fs::path& path);
+   bool shouldSkipDirectory(const std::string& path);
+   bool initializeClamAV();
+   bool scanFile(const std::string& filepath);
+   void scanDirectory(const fs::path& path);
+   void quarantineFile(const std::string& filepath);
+   const std::string quarantinePath = "/home/gianmarco/clamav/custom-clam-scanner/build/Quarantine";
 
 public:
-    SystemScan();
-    ~SystemScan();
-    void startScan();
+   SystemScan();
+   ~SystemScan();
+   // Kicks off full system scan - this will take a while
+   void startScan();
 };
 
 #endif

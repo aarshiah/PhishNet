@@ -6,49 +6,53 @@
 #include <vector>
 #include <filesystem>
 
+// Stores details about individual file scans
 struct ScanRecord {
-    std::string file_path;    // Path of scanned file
-    bool detected;            // Whether a threat was detected
-    std::string scan_date;    // Date when scan was performed
-    std::string threat_name;  // Name of the detected threat
-    std::string scan_type;    // Type of scan performed
+   std::string file_path;    // Path of scanned file
+   bool detected;            
+   std::string scan_date;    
+   std::string threat_name;  
+   std::string scan_type;    
 };
 
+// Tracks overall scan session info and stats
 struct ScanSession {
-    std::string session_id;    // Unique identifier for scan session
-    std::string scan_type;     // Type of scan (quick, system, custom)
-    std::string start_time;    // When the scan started
-    std::string end_time;      // When the scan completed
-    int files_scanned;         // Total number of files scanned
-    int threats_found;         // Total number of threats detected
+   std::string session_id;    
+   std::string scan_type;     
+   std::string start_time;    
+   std::string end_time;     
+   int files_scanned;         
+   int threats_found;         // Total number of threats detected
 };
 
+// Handles all database operations for storing scan results
 class Database {
 private:
-    sqlite3* db;                      // SQLite database connection pointer
-    std::string current_session_id;   // Current scan session identifier
-    
-    void createTables();              // Creates necessary database tables
-    std::string generateSessionId();  // Generates unique session ID
-    std::string getCurrentTimestamp();// Gets current time as string
-    void generateReport(const std::string& session_id); // Generates scan report
+   sqlite3* db;                      // Main database connection
+   std::string current_session_id;   // Tracks active scan session
+   
+   // Core database setup and utilities
+   void createTables();              // Sets up DB schema if needed
+   std::string generateSessionId();  // Creates unique session ID
+   std::string getCurrentTimestamp();
+   void generateReport(const std::string& session_id); 
 
 public:
-    Database();  // Constructor to initialize database
-    ~Database(); // Destructor to clean up resources
-    
-    // Session management
-    void startSession(const std::string& scan_type);
-    void endSession(int files_scanned, int threats_found);
-    
-    // Scanning results
-    void logScanResult(const std::string& filePath, bool detected, const std::string& threatName = "");
-    
-    // History and reporting
-    std::vector<ScanSession> getRecentSessions(int limit = 10);
-    std::vector<ScanRecord> getSessionResults(const std::string& session_id);
-    std::string getScanSummary(const std::string& session_id);
-    void viewScanHistory();  // Added method for viewing scan history
+   Database();  
+   ~Database(); 
+   
+   // Session lifecycle methods
+   void startSession(const std::string& scan_type);
+   void endSession(int files_scanned, int threats_found);
+   
+   // Record scanning results
+   void logScanResult(const std::string& filePath, bool detected, const std::string& threatName = "");
+   
+   // Query scan history and generate reports
+   std::vector<ScanSession> getRecentSessions(int limit = 10);
+   std::vector<ScanRecord> getSessionResults(const std::string& session_id);
+   std::string getScanSummary(const std::string& session_id);
+   void viewScanHistory();
 };
 
 #endif

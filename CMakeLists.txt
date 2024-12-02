@@ -16,6 +16,7 @@ set(SOURCES
     src/quickscan.cpp
     src/systemscan.cpp
     src/customscan.cpp
+    src/signatureupdater.cpp    # Changed to lowercase
 )
 
 # Header files directory

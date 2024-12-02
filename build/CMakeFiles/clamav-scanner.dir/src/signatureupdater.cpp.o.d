@@ -1,7 +1,8 @@
-CMakeFiles/clamav-scanner.dir/src/main.cpp.o: \
- /home/gianmarco/clamav/custom-clam-scanner/src/main.cpp \
- /usr/include/stdc-predef.h /usr/include/c++/13/iostream \
- /usr/include/c++/13/bits/requires_hosted.h \
+CMakeFiles/clamav-scanner.dir/src/signatureupdater.cpp.o: \
+ /home/gianmarco/clamav/custom-clam-scanner/src/signatureupdater.cpp \
+ /usr/include/stdc-predef.h \
+ /home/gianmarco/clamav/custom-clam-scanner/include/signatureupdater.h \
+ /usr/include/c++/13/iostream /usr/include/c++/13/bits/requires_hosted.h \
  /usr/include/x86_64-linux-gnu/c++/13/bits/c++config.h \
  /usr/include/x86_64-linux-gnu/c++/13/bits/os_defines.h \
  /usr/include/features.h /usr/include/features-time64.h \
@@ -149,119 +150,23 @@ CMakeFiles/clamav-scanner.dir/src/main.cpp.o: \
  /usr/include/c++/13/bits/locale_facets.tcc \
  /usr/include/c++/13/bits/basic_ios.tcc \
  /usr/include/c++/13/bits/ostream.tcc /usr/include/c++/13/istream \
- /usr/include/c++/13/bits/istream.tcc /usr/include/c++/13/filesystem \
- /usr/include/c++/13/bits/fs_fwd.h /usr/include/c++/13/cstdint \
+ /usr/include/c++/13/bits/istream.tcc /usr/include/c++/13/chrono \
+ /usr/include/c++/13/bits/chrono.h /usr/include/c++/13/ratio \
+ /usr/include/c++/13/cstdint \
  /usr/lib/gcc/x86_64-linux-gnu/13/include/stdint.h /usr/include/stdint.h \
  /usr/include/x86_64-linux-gnu/bits/stdint-uintn.h \
  /usr/include/x86_64-linux-gnu/bits/stdint-least.h \
- /usr/include/c++/13/bits/chrono.h /usr/include/c++/13/ratio \
  /usr/include/c++/13/limits /usr/include/c++/13/ctime \
- /usr/include/c++/13/bits/parse_numbers.h \
- /usr/include/c++/13/bits/fs_path.h /usr/include/c++/13/locale \
+ /usr/include/c++/13/bits/parse_numbers.h /usr/include/c++/13/thread \
+ /usr/include/c++/13/bits/std_thread.h \
+ /usr/include/c++/13/bits/unique_ptr.h \
+ /usr/include/c++/13/bits/this_thread_sleep.h /usr/include/c++/13/sstream \
+ /usr/include/c++/13/bits/sstream.tcc /usr/include/c++/13/iomanip \
+ /usr/include/c++/13/locale \
  /usr/include/c++/13/bits/locale_facets_nonio.h \
  /usr/include/x86_64-linux-gnu/c++/13/bits/time_members.h \
  /usr/include/x86_64-linux-gnu/c++/13/bits/messages_members.h \
  /usr/include/libintl.h /usr/include/c++/13/bits/codecvt.h \
  /usr/include/c++/13/bits/locale_facets_nonio.tcc \
- /usr/include/c++/13/bits/locale_conv.h /usr/include/c++/13/iomanip \
- /usr/include/c++/13/bits/quoted_string.h /usr/include/c++/13/sstream \
- /usr/include/c++/13/bits/sstream.tcc /usr/include/c++/13/codecvt \
- /usr/include/c++/13/ext/concurrence.h \
- /usr/include/c++/13/bits/shared_ptr.h \
- /usr/include/c++/13/bits/shared_ptr_base.h \
- /usr/include/c++/13/bits/allocated_ptr.h \
- /usr/include/c++/13/bits/unique_ptr.h \
- /usr/include/c++/13/ext/aligned_buffer.h \
- /usr/include/c++/13/bits/fs_dir.h /usr/include/c++/13/bits/fs_ops.h \
- /home/gianmarco/clamav/custom-clam-scanner/include/scheduler.h \
- /usr/include/sqlite3.h /usr/include/c++/13/vector \
- /usr/include/c++/13/bits/stl_uninitialized.h \
- /usr/include/c++/13/bits/stl_vector.h \
- /usr/include/c++/13/bits/stl_bvector.h \
- /usr/include/c++/13/bits/vector.tcc \
- /home/gianmarco/clamav/custom-clam-scanner/include/Database.h \
- /home/gianmarco/clamav/custom-clam-scanner/include/quickscan.h \
- /usr/include/clamav.h /usr/include/openssl/ssl.h \
- /usr/include/openssl/macros.h \
- /usr/include/x86_64-linux-gnu/openssl/opensslconf.h \
- /usr/include/x86_64-linux-gnu/openssl/configuration.h \
- /usr/include/openssl/opensslv.h /usr/include/openssl/e_os2.h \
- /usr/include/openssl/comp.h /usr/include/openssl/crypto.h \
- /usr/include/c++/13/stdlib.h /usr/include/openssl/safestack.h \
- /usr/include/openssl/stack.h /usr/include/openssl/types.h \
- /usr/lib/gcc/x86_64-linux-gnu/13/include/limits.h \
- /usr/lib/gcc/x86_64-linux-gnu/13/include/syslimits.h \
- /usr/include/limits.h /usr/include/x86_64-linux-gnu/bits/posix1_lim.h \
- /usr/include/x86_64-linux-gnu/bits/local_lim.h \
- /usr/include/linux/limits.h \
- /usr/include/x86_64-linux-gnu/bits/posix2_lim.h \
- /usr/include/x86_64-linux-gnu/bits/xopen_lim.h \
- /usr/include/x86_64-linux-gnu/bits/uio_lim.h \
- /usr/include/openssl/cryptoerr.h /usr/include/openssl/symhacks.h \
- /usr/include/openssl/cryptoerr_legacy.h /usr/include/openssl/core.h \
- /usr/include/openssl/comperr.h /usr/include/openssl/bio.h \
- /usr/include/openssl/bioerr.h /usr/include/openssl/x509.h \
- /usr/include/openssl/buffer.h /usr/include/openssl/buffererr.h \
- /usr/include/openssl/evp.h /usr/include/openssl/core_dispatch.h \
- /usr/include/openssl/evperr.h /usr/include/openssl/params.h \
- /usr/include/openssl/bn.h /usr/include/openssl/bnerr.h \
- /usr/include/openssl/objects.h /usr/include/openssl/obj_mac.h \
- /usr/include/openssl/asn1.h /usr/include/openssl/asn1err.h \
- /usr/include/openssl/objectserr.h /usr/include/openssl/ec.h \
- /usr/include/string.h /usr/include/strings.h \
- /usr/include/openssl/ecerr.h /usr/include/openssl/rsa.h \
- /usr/include/openssl/rsaerr.h /usr/include/openssl/dsa.h \
- /usr/include/openssl/dh.h /usr/include/openssl/dherr.h \
- /usr/include/openssl/dsaerr.h /usr/include/openssl/sha.h \
- /usr/include/openssl/x509err.h /usr/include/openssl/x509_vfy.h \
- /usr/include/openssl/lhash.h /usr/include/openssl/pkcs7.h \
- /usr/include/openssl/pkcs7err.h /usr/include/openssl/http.h \
- /usr/include/openssl/conf.h /usr/include/openssl/conferr.h \
- /usr/include/openssl/conftypes.h /usr/include/openssl/pem.h \
- /usr/include/openssl/pemerr.h /usr/include/openssl/hmac.h \
- /usr/include/openssl/async.h /usr/include/openssl/asyncerr.h \
- /usr/include/openssl/ct.h /usr/include/openssl/cterr.h \
- /usr/include/openssl/sslerr.h /usr/include/openssl/sslerr_legacy.h \
- /usr/include/openssl/prov_ssl.h /usr/include/openssl/ssl2.h \
- /usr/include/openssl/ssl3.h /usr/include/openssl/tls1.h \
- /usr/include/openssl/dtls1.h /usr/include/openssl/srtp.h \
- /usr/include/openssl/err.h /usr/include/x86_64-linux-gnu/sys/stat.h \
- /usr/include/x86_64-linux-gnu/bits/stat.h \
- /usr/include/x86_64-linux-gnu/bits/struct_stat.h \
- /usr/include/x86_64-linux-gnu/bits/statx.h /usr/include/linux/stat.h \
- /usr/include/linux/types.h /usr/include/x86_64-linux-gnu/asm/types.h \
- /usr/include/asm-generic/types.h /usr/include/asm-generic/int-ll64.h \
- /usr/include/x86_64-linux-gnu/asm/bitsperlong.h \
- /usr/include/asm-generic/bitsperlong.h /usr/include/linux/posix_types.h \
- /usr/include/linux/stddef.h \
- /usr/include/x86_64-linux-gnu/asm/posix_types.h \
- /usr/include/x86_64-linux-gnu/asm/posix_types_64.h \
- /usr/include/asm-generic/posix_types.h \
- /usr/include/x86_64-linux-gnu/bits/statx-generic.h \
- /usr/include/x86_64-linux-gnu/bits/types/struct_statx_timestamp.h \
- /usr/include/x86_64-linux-gnu/bits/types/struct_statx.h \
- /usr/lib/gcc/x86_64-linux-gnu/13/include/stdbool.h \
- /usr/include/clamav-types.h /usr/include/inttypes.h \
- /usr/include/clamav-version.h /usr/include/c++/13/chrono \
- /home/gianmarco/clamav/custom-clam-scanner/include/systemscan.h \
- /usr/include/c++/13/thread /usr/include/c++/13/bits/std_thread.h \
- /usr/include/c++/13/bits/this_thread_sleep.h \
- /usr/include/c++/13/algorithm /usr/include/c++/13/bits/stl_algo.h \
- /usr/include/c++/13/bits/algorithmfwd.h \
- /usr/include/c++/13/bits/stl_heap.h \
- /usr/include/c++/13/bits/uniform_int_dist.h \
- /usr/include/c++/13/bits/stl_tempbuf.h \
- /usr/include/c++/13/pstl/glue_algorithm_defs.h \
- /usr/include/c++/13/pstl/execution_defs.h \
- /home/gianmarco/clamav/custom-clam-scanner/include/customscan.h \
- /usr/include/c++/13/memory \
- /usr/include/c++/13/bits/stl_raw_storage_iter.h \
- /usr/include/c++/13/bits/align.h \
- /usr/include/c++/13/bits/shared_ptr_atomic.h \
- /usr/include/c++/13/bits/atomic_base.h \
- /usr/include/c++/13/bits/atomic_lockfree_defines.h \
- /usr/include/c++/13/backward/auto_ptr.h \
- /usr/include/c++/13/pstl/glue_memory_defs.h /usr/include/c++/13/array \
- /usr/include/c++/13/compare \
- /home/gianmarco/clamav/custom-clam-scanner/include/signatureupdater.h \
- /home/gianmarco/clamav/custom-clam-scanner/include/Database.h
+ /usr/include/c++/13/bits/locale_conv.h \
+ /usr/include/c++/13/bits/quoted_string.h

@@ -9,6 +9,7 @@
 
 namespace fs = std::filesystem;
 
+// Initialize database and create tables if they don't exist
 Database::Database() {
     int rc = sqlite3_open("scan_results.db", &db);
     if (rc != SQLITE_OK) {
@@ -18,9 +19,10 @@ Database::Database() {
     }
 }
 
+// Create required database schema 
 void Database::createTables() {
     const char* sql[] = {
-        // Scan sessions table
+        // Main table for scanning sessions
         R"(
         CREATE TABLE IF NOT EXISTS ScanSessions (
             session_id TEXT PRIMARY KEY,
@@ -31,7 +33,7 @@ void Database::createTables() {
             threats_found INTEGER
         );
         )",
-        // Scan results table
+        // Detailed scan results for each file
         R"(
         CREATE TABLE IF NOT EXISTS ScanResults (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -55,6 +57,7 @@ void Database::createTables() {
     }
 }
 
+// Generate unique session ID from timestamp and hash
 std::string Database::generateSessionId() {
     auto now = std::chrono::system_clock::now();
     auto time = std::chrono::system_clock::to_time_t(now);
@@ -64,6 +67,7 @@ std::string Database::generateSessionId() {
     return ss.str();
 }
 
+// Get formatted current timestamp 
 std::string Database::getCurrentTimestamp() {
     auto now = std::chrono::system_clock::now();
     auto time = std::chrono::system_clock::to_time_t(now);
@@ -72,6 +76,7 @@ std::string Database::getCurrentTimestamp() {
     return ss.str();
 }
 
+// Create new scan session and store initial info
 void Database::startSession(const std::string& scan_type) {
     current_session_id = generateSessionId();
     const char* sql = "INSERT INTO ScanSessions (session_id, scan_type, start_time) VALUES (?, ?, ?);";
@@ -88,6 +93,7 @@ void Database::startSession(const std::string& scan_type) {
     }
 }
 
+// Update session with final stats and generate report
 void Database::endSession(int files_scanned, int threats_found) {
     const char* sql = "UPDATE ScanSessions SET end_time = ?, files_scanned = ?, threats_found = ? WHERE session_id = ?;";
     
@@ -106,6 +112,7 @@ void Database::endSession(int files_scanned, int threats_found) {
     generateReport(current_session_id);
 }
 
+// Store scan result for individual file
 void Database::logScanResult(const std::string& filePath, bool detected, const std::string& threatName) {
     const char* sql = "INSERT INTO ScanResults (session_id, file_path, detected, threat_name) VALUES (?, ?, ?, ?);";
     
@@ -121,6 +128,7 @@ void Database::logScanResult(const std::string& filePath, bool detected, const s
     }
 }
 
+// Get most recent scan sessions, limited to specified count
 std::vector<ScanSession> Database::getRecentSessions(int limit) {
     std::vector<ScanSession> sessions;
     const char* sql = R"(
@@ -151,6 +159,7 @@ std::vector<ScanSession> Database::getRecentSessions(int limit) {
     return sessions;
 }
 
+// Get all scan results for a specific session
 std::vector<ScanRecord> Database::getSessionResults(const std::string& session_id) {
     std::vector<ScanRecord> records;
     const char* sql = R"(
@@ -179,6 +188,7 @@ std::vector<ScanRecord> Database::getSessionResults(const std::string& session_i
     return records;
 }
 
+// Get summary of scan session stats
 std::string Database::getScanSummary(const std::string& session_id) {
     std::stringstream summary;
     const char* sql = R"(
@@ -205,8 +215,9 @@ std::string Database::getScanSummary(const std::string& session_id) {
     return summary.str();
 }
 
+// Display formatted scan history with threat details
 void Database::viewScanHistory() {
-    auto sessions = getRecentSessions(10);  // Get last 10 sessions
+    auto sessions = getRecentSessions(10);  // Show last 10 scans
     
     if (sessions.empty()) {
         std::cout << "\nNo scan history found.\n";
@@ -233,7 +244,7 @@ void Database::viewScanHistory() {
                   << std::setw(10) << session.files_scanned
                   << session.threats_found << "\n";
 
-        // If threats were found, display them
+        // Show details for any threats found
         if (session.threats_found > 0) {
             auto results = getSessionResults(session.session_id);
             for (const auto& result : results) {
@@ -248,6 +259,7 @@ void Database::viewScanHistory() {
     std::cout << std::string(100, '-') << "\n";
 }
 
+// Generate detailed report file for scan session
 void Database::generateReport(const std::string& session_id) {
     fs::create_directories("scan_reports");
     std::string filename = "scan_reports/scan_" + session_id + ".txt";
@@ -260,7 +272,7 @@ void Database::generateReport(const std::string& session_id) {
 
     report << getScanSummary(session_id) << "\n\n";
 
-    // Get detected threats
+    // Add details of any threats found
     const char* threats_sql = "SELECT file_path, threat_name, scan_date FROM ScanResults "
                              "WHERE session_id = ? AND detected = 1;";
     
@@ -292,6 +304,7 @@ void Database::generateReport(const std::string& session_id) {
     std::cout << "\nScan report generated: " << filename << std::endl;
 }
 
+// Clean up database connection
 Database::~Database() {
     if (db) {
         sqlite3_close(db);

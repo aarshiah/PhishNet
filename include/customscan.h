@@ -9,24 +9,35 @@
 #include <memory>
 #include <array>
 #include <iomanip>
+#include <filesystem>
 #include "Database.h"
 
+// Handles virus scanning using ClamAV. Remember to call initialize() first
 class ClamAVTester {
 public:  
-    int filesScanned;
-    int threatsFound;
+   // Stats tracking for the current scan
+   int filesScanned;
+   int threatsFound; 
+   std::string scanPath;
 
-    ClamAVTester();
-    ~ClamAVTester();
-    bool initialize();
-    bool scanFile(const std::string& filepath);
-    void scanDirectory(const std::string& dirpath);
+   explicit ClamAVTester(const std::string& path = "");
+   ~ClamAVTester();
+   
+   bool initialize(); 
+   bool scanFile(const std::string& filepath);
+   void scanDirectory(const std::string& dirpath);
+   // Moves infected files to quarantine - needs write permissions
+   void quarantineFile(const std::string& filepath); 
+   void startScan();
+   void setScanPath(const std::string& path);
 
 private:
-    cl_engine* engine;
-    unsigned int sigs;
-    struct cl_scan_options options;
-    Database database;
+   // ClamAV engine instance - cleaned up in destructor
+   cl_engine* engine;
+   unsigned int sigs;
+   struct cl_scan_options options;
+   Database database;
+   const std::string quarantinePath = "/home/gianmarco/clamav/custom-clam-scanner/build/Quarantine";
 };
 
 #endif

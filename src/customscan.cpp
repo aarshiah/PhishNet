@@ -1,6 +1,8 @@
 #include "customscan.h"
+#include <sys/stat.h>
 
-ClamAVTester::ClamAVTester() : engine(nullptr), sigs(0), filesScanned(0), threatsFound(0) {
+ClamAVTester::ClamAVTester(const std::string& path) 
+    : engine(nullptr), sigs(0), filesScanned(0), threatsFound(0), scanPath(path) {
     memset(&options, 0, sizeof(struct cl_scan_options));
     options.parse = ~0;
     options.general = CL_SCAN_GENERAL_ALLMATCHES;
@@ -44,6 +46,69 @@ bool ClamAVTester::initialize() {
     return true;
 }
 
+void ClamAVTester::setScanPath(const std::string& path) {
+    scanPath = path;
+}
+
+void ClamAVTester::startScan() {
+    if (scanPath.empty()) {
+        std::cerr << "Error: No path specified for scanning." << std::endl;
+        return;
+    }
+
+    if (!initialize()) {
+        std::cerr << "Failed to initialize ClamAV" << std::endl;
+        return;
+    }
+
+    // Reset counters
+    filesScanned = 0;
+    threatsFound = 0;
+
+    // Determine scan type based on path
+    std::string scanType;
+    if (std::filesystem::is_directory(scanPath)) {
+        scanType = "directory_scan";
+    } else {
+        scanType = "file_scan";
+    }
+
+    // Start new database session
+    database.startSession(scanType);
+
+    std::cout << "\nStarting scan of: " << scanPath << std::endl;
+
+    try {
+        if (!std::filesystem::exists(scanPath)) {
+            std::cout << "Error: Path does not exist: " << scanPath << std::endl;
+            return;
+        }
+
+        if (std::filesystem::is_directory(scanPath)) {
+            std::cout << "Scanning directory..." << std::endl;
+            scanDirectory(scanPath);
+        } else if (std::filesystem::is_regular_file(scanPath)) {
+            std::cout << "Scanning file..." << std::endl;
+            scanFile(scanPath);
+        } else {
+            std::cout << "Error: Path is neither a regular file nor a directory." << std::endl;
+            return;
+        }
+
+        // End database session with scan results
+        database.endSession(filesScanned, threatsFound);
+
+        std::cout << "\nScan completed." << std::endl;
+        std::cout << "Files scanned: " << filesScanned << std::endl;
+        std::cout << "Threats found: " << threatsFound << std::endl;
+
+    } catch (const std::filesystem::filesystem_error& e) {
+        std::cerr << "Error during scan: " << e.what() << std::endl;
+        // End session even if there was an error
+        database.endSession(filesScanned, threatsFound);
+    }
+}
+
 bool ClamAVTester::scanFile(const std::string& filepath) {
     const char* virname = nullptr;
     unsigned long int scanned = 0;
@@ -58,50 +123,57 @@ bool ClamAVTester::scanFile(const std::string& filepath) {
     
     switch (ret) {
         case CL_CLEAN:
+            // Log clean file to database
             database.logScanResult(filepath, false);
             return true;
             
         case CL_VIRUS:
-            std::cout << "\n[!] Threat detected in: " << filepath << "\n[!] Threat name: " << virname << std::endl;
+            std::cout << "\n[!] Threat detected in: " << filepath 
+                     << "\n[!] Threat name: " << virname << std::endl;
+            // Log infected file to database with threat name
             database.logScanResult(filepath, true, virname);
             threatsFound++;
+            quarantineFile(filepath);
             return false;
             
         default:
-            database.logScanResult(filepath, false);
+            std::cout << "\nError scanning file " << filepath 
+                     << ": " << cl_strerror(ret) << std::endl;
+            // Log error as a failed scan
+            database.logScanResult(filepath, false, "scan_error");
             return false;
     }
 }
 
 void ClamAVTester::scanDirectory(const std::string& dirpath) {
-    std::string command = "ls -A \"" + dirpath + "\"";
-    std::array<char, 128> buffer;
-    
-    std::unique_ptr<FILE, decltype(&pclose)> pipe(popen(command.c_str(), "r"), pclose);
-    if (!pipe) {
-        std::cerr << "Failed to open directory: " << dirpath << std::endl;
-        return;
+    try {
+        for (const auto& entry : std::filesystem::recursive_directory_iterator(dirpath)) {
+            if (std::filesystem::is_regular_file(entry)) {
+                scanFile(entry.path().string());
+            }
+        }
+    } catch (const std::filesystem::filesystem_error& e) {
+        std::cerr << "Error accessing directory: " << e.what() << std::endl;
     }
-    
-    while (fgets(buffer.data(), buffer.size(), pipe.get()) != nullptr) {
-        std::string filename(buffer.data());
-        filename.erase(filename.find_last_not_of(" \n\r\t") + 1);
-        std::string filepath = dirpath + "/" + filename;
-        
-        std::string testCommand = "test -d \"" + filepath + "\" && echo dir || echo file";
-        std::array<char, 8> testBuffer;
-        std::string typeResult;
+}
 
-        std::unique_ptr<FILE, decltype(&pclose)> testPipe(popen(testCommand.c_str(), "r"), pclose);
-        if (fgets(testBuffer.data(), testBuffer.size(), testPipe.get()) != nullptr) {
-            typeResult = testBuffer.data();
-            typeResult.erase(typeResult.find_last_not_of(" \n\r\t") + 1);
-        }
+void ClamAVTester::quarantineFile(const std::string& filepath) {
+    try {
+        // Create quarantine directory if it doesn't exist
+        std::filesystem::create_directories(quarantinePath);
         
-        if (typeResult == "dir") {
-            scanDirectory(filepath);
-        } else if (typeResult == "file") {
-            scanFile(filepath);
-        }
+        // Construct the destination path
+        std::string filename = std::filesystem::path(filepath).filename().string();
+        std::string destination = (std::filesystem::path(quarantinePath) / filename).string();
+        
+        // Move the file
+        std::filesystem::rename(filepath, destination);
+        std::cout << "File successfully moved to quarantine: " << destination << std::endl;
+        
+        // Log quarantine action to database
+        // database.logScanResult(destination, true, "quarantined");
+        
+    } catch (const std::filesystem::filesystem_error& e) {
+        std::cerr << "Error moving file to quarantine: " << e.what() << std::endl;
     }
 }

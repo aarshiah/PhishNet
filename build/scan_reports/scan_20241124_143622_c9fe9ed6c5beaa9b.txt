@@ -1,7 +1,0 @@
-Scan Type: quick
-Start Time: 2024-11-24 14:36:22
-End Time: 2024-11-24 14:38:27
-Files Scanned: 34
-Threats Found: 0
-
-No threats were detected during this scan.

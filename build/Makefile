@@ -294,6 +294,30 @@ src/scheduler.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/clamav-scanner.dir/build.make CMakeFiles/clamav-scanner.dir/src/scheduler.cpp.s
 .PHONY : src/scheduler.cpp.s
 
+src/signatureupdater.o: src/signatureupdater.cpp.o
+.PHONY : src/signatureupdater.o
+
+# target to build an object file
+src/signatureupdater.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/clamav-scanner.dir/build.make CMakeFiles/clamav-scanner.dir/src/signatureupdater.cpp.o
+.PHONY : src/signatureupdater.cpp.o
+
+src/signatureupdater.i: src/signatureupdater.cpp.i
+.PHONY : src/signatureupdater.i
+
+# target to preprocess a source file
+src/signatureupdater.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/clamav-scanner.dir/build.make CMakeFiles/clamav-scanner.dir/src/signatureupdater.cpp.i
+.PHONY : src/signatureupdater.cpp.i
+
+src/signatureupdater.s: src/signatureupdater.cpp.s
+.PHONY : src/signatureupdater.s
+
+# target to generate assembly for a file
+src/signatureupdater.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/clamav-scanner.dir/build.make CMakeFiles/clamav-scanner.dir/src/signatureupdater.cpp.s
+.PHONY : src/signatureupdater.cpp.s
+
 src/systemscan.o: src/systemscan.cpp.o
 .PHONY : src/systemscan.o
 
@@ -346,6 +370,9 @@ help:
 	@echo "... src/scheduler.o"
 	@echo "... src/scheduler.i"
 	@echo "... src/scheduler.s"
+	@echo "... src/signatureupdater.o"
+	@echo "... src/signatureupdater.i"
+	@echo "... src/signatureupdater.s"
 	@echo "... src/systemscan.o"
 	@echo "... src/systemscan.i"
 	@echo "... src/systemscan.s"
