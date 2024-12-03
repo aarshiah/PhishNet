@@ -1,0 +1,17 @@
+Scan Type: quick
+Start Time: 2024-12-03 14:58:53
+End Time: 2024-12-03 15:00:22
+Files Scanned: 6
+Threats Found: 1
+
+Detected Threats:
+================
+
+File: /home/gianmarco/Desktop/eicar.zip
+Threat: Eicar-Signature
+Detection Time: 2024-12-03 20:00:22
+
+File: /home/gianmarco/clamav/custom-clam-scanner/build/Quarantine/eicar.zip
+Threat: quarantined
+Detection Time: 2024-12-03 20:00:22
+

@@ -1,7 +1,7 @@
 Scan Type: directory_scan
-Start Time: 2024-12-02 18:22:25
-End Time: 2024-12-02 18:22:25
-Files Scanned: 0
+Start Time: 2024-12-03 14:56:53
+End Time: 2024-12-03 14:56:53
+Files Scanned: 6
 Threats Found: 0
 
 No threats were detected during this scan.
