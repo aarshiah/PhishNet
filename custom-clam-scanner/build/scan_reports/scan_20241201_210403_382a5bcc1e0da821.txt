@@ -1,0 +1,13 @@
+Scan Type: directory_scan
+Start Time: 2024-12-01 21:04:03
+End Time: 2024-12-01 21:04:04
+Files Scanned: 42
+Threats Found: 1
+
+Detected Threats:
+================
+
+File: /home/gianmarco/clamav/custom-clam-scanner/build/eicar.txt
+Threat: Eicar-Signature
+Detection Time: 2024-12-02 02:04:04
+
