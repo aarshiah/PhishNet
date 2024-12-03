@@ -166,7 +166,7 @@ void ClamAVTester::quarantineFile(const std::string& filepath) {
         std::string filename = std::filesystem::path(filepath).filename().string();
         std::string destination = (std::filesystem::path(quarantinePath) / filename).string();
         
-        // Move the file
+        
         std::filesystem::rename(filepath, destination);
         std::cout << "File successfully moved to quarantine: " << destination << std::endl;
         
